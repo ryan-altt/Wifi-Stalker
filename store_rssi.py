@@ -11,12 +11,12 @@ def store_rssi(name):
 
     for line in wifis_tab:
         if name in line:
-            return int(line.split()[6])
+            return int(line.split()[7])
 
-def main():
-    if len(sys.argv) != 1:
-        exit(84)
-    print(store_rssi('GRACE_OF_GOD'))
+# def main():
+#     if len(sys.argv) != 1:
+#         exit(84)
+#     print(store_rssi('GRACE_OF_GOD'))
 
 if __name__ == "__main__":
     main()

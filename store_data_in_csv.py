@@ -4,7 +4,7 @@ from store_rssi import store_rssi
 import sys
 
 def store_data_in_csv(wifi_name):
-    
+
     with open("data.csv", "a") as file:
         while True:
             rssi = store_rssi(wifi_name)
