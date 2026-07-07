@@ -1,53 +1,34 @@
 # Wifi-tracker
 
-Wifi-tracker is a Python-based tool designed to detect movement within a room by monitoring the **RSSI (Received Signal Strength Indicator)** of a specific Wi-Fi network.
+Un petit outil en Python pour détecter des mouvements dans une pièce en surveillant les variations du signal RSSI d'un réseau Wi-Fi.
 
-## 🚀 How it Works
+## Le principe
+L'idée est simple : le corps humain absorbe et réfléchit les ondes radio (2.4GHz/5GHz). Quand quelqu'un passe entre la borne Wi-Fi et le récepteur, le RSSI fluctue.
 
-The system leverages the fact that human bodies are primarily composed of water, which absorbs and reflects 2.4GHz/5GHz radio signals. When a person moves between a Wi-Fi access point and the receiver, the RSSI fluctuates.
+Le script fonctionne en deux temps :
+1. **Calibrage** : On échantillonne le signal dans une pièce vide pour établir une moyenne de base.
+2. **Surveillance** : On monitor le signal en continu. Si le RSSI chute significativement sous la moyenne calibrée, on considère qu'il y a un mouvement.
 
-The tool operates in two phases:
-1. **Calibration Phase**: It samples the Wi-Fi signal in an empty room to establish a baseline average RSSI.
-2. **Monitoring Phase**: It continuously monitors the signal. If the RSSI drops significantly below the calibrated average (exceeding a predefined margin), a movement is detected.
+## Setup rapide
 
-## ✨ Features
-
-- **Real-time Detection**: Immediate feedback when movement is detected.
-- **Data Logging**: Ability to log RSSI values over time to a CSV file for further analysis.
-- **Visualization**: Integrated graphing tool using Matplotlib to visualize signal variations and smoothing.
-
-## 🛠️ Prerequisites
-
-- **Operating System**: Linux (required for `nmcli`).
-- **Tooling**: `NetworkManager` must be installed and running (`nmcli` command).
-- **Python 3.x**
-
-## 📦 Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/Wifi-tracker.git
-   cd Wifi-tracker
-   ```
-
-2. Install the required Python libraries:
-   ```bash
-   pip install pandas matplotlib
-   ```
-
-## 🚀 Usage
-
-Run the detector by specifying the name (SSID) of the Wi-Fi network you want to track:
+Le projet tourne sous Linux (nécessite `nmcli` et `NetworkManager`).
 
 ```bash
-python detector.py "Your_Wifi_Name"
+# Installation des dépendances
+pip install pandas matplotlib
 ```
 
-## 📊 Data Analysis
+## Utilisation
 
-The project includes functionality to store data in `data.csv` and generate graphs to analyze the signal stability and the impact of movement.
+Lancer le détecteur en passant le nom (SSID) du réseau à surveiller :
 
-## ⚠️ Limitations
+```bash
+python detector.py "Ton_Wifi_Name"
+```
 
-- **Sensitivity**: The detection depends on the environment, the distance between the AP and the receiver, and the specific Wi-Fi hardware used.
-- **False Positives**: Other electronic devices or moving metal objects can also affect RSSI.
+## Analyse des données
+Les valeurs de signal sont stockées dans `data.csv`. Le script permet également de générer des graphiques via Matplotlib pour analyser la stabilité du signal et l'impact réel des mouvements.
+
+## Limites connues
+- **Sensibilité** : Dépend fortement de l'environnement et du matériel Wi-Fi utilisé.
+- **Faux positifs** : D'autres objets métalliques en mouvement ou des appareils électroniques peuvent perturber le signal.
