@@ -71,30 +71,36 @@ def detect_rssi(wifi_name):
     samples = []
     motion_index = 0
     motion = ['|', '/', '-', '\\']
-    for i in range(1, 10):
+    for i in range(1, 16):
         rssi = store_rssi(wifi_name)
         samples.append(rssi)
-        print(f"\rCalibration [{i}/10] [{motion[motion_index]}]", end="")
+        print(f"\rCalibration [{i}/15] [{motion[motion_index]}] RSSI: {rssi}", end="")
         motion_index = motion_index + 1
         if motion_index > 3:
             motion_index = 0
-        time.sleep(1)
+        time.sleep(0.5)
     mean_val = sum(samples) / len(samples)
-    print(f"\r{GREEN}Calibration termine. Moyenne:{RESET} {mean_val}\n")
+    print(f"\r{GREEN}Calibration termine. Moyenne:{RESET} {mean_val:.2f}\n")
 
     # Entrer dans la phase de surveillance
     print(f"{BLUE}[PHASE DE SURVEILLANCE]{RESET}")
-    margin = 10
+    margin = 5
     verif = 0
+    threshold = mean_val - margin
+    print(f"Seuil de détection: {threshold:.2f} dBm (Moyenne: {mean_val:.2f} - Marge: {margin})")
+
     while True:
         actual_rssi = store_rssi(wifi_name)
-        if actual_rssi < (mean_val - margin):
+        if actual_rssi < threshold:
             verif = verif + 1
             if verif >= 3:
-                print(f"\r{RED}#MOUVEMENT DETECTE#{RESET}", end="")
+                print(f"\r{RED}#MOUVEMENT DETECTE# {RESET}RSSI: {actual_rssi} < {threshold:.2f}", end="")
+            else:
+                print(f"\rAnalyse... {actual_rssi} < {threshold:.2f} [{motion[motion_index]}]", end="")
         else:
             verif = 0
-            print(f"\rNo detection... [{motion[motion_index]}]", end="")
+            print(f"\rNo detection... RSSI: {actual_rssi} > {threshold:.2f} [{motion[motion_index]}]", end="")
+
         motion_index = motion_index + 1
         if motion_index > 3:
             motion_index = 0
