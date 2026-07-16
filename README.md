@@ -1,34 +1,37 @@
-# Wifi-tracker
+# Wifi-Stalker
 
-Un petit outil en Python pour détecter des mouvements dans une pièce en surveillant les variations du signal RSSI d'un réseau Wi-Fi.
+A Python tool to detect human movement in a room by monitoring Wi-Fi signal RSSI variations.
 
-## Le principe
-L'idée est simple : le corps humain absorbe et réfléchit les ondes radio (2.4GHz/5GHz). Quand quelqu'un passe entre la borne Wi-Fi et le récepteur, le RSSI fluctue.
+## The Concept
 
-Le script fonctionne en deux temps :
-1. **Calibrage** : On échantillonne le signal dans une pièce vide pour établir une moyenne de base.
-2. **Surveillance** : On monitor le signal en continu. Si le RSSI chute significativement sous la moyenne calibrée, on considère qu'il y a un mouvement.
+The idea is simple: human bodies absorb and reflect radio waves (2.4GHz/5GHz). When someone walks between the Wi-Fi access point and the receiver, the RSSI fluctuates.
 
-## Setup rapide
+The script works in two phases:
+1. **Calibration**: Sample the signal in an empty room to establish a baseline average.
+2. **Monitoring**: Continuously track the signal. If RSSI drops significantly below the calibrated average, movement is detected.
 
-Le projet tourne sous Linux (nécessite `nmcli` et `NetworkManager`).
+## Quick Setup
+
+The project runs on Linux (requires `nmcli` and NetworkManager).
 
 ```bash
-# Installation des dépendances
+# Install dependencies
 pip install pandas matplotlib
 ```
 
-## Utilisation
+## Usage
 
-Lancer le détecteur en passant le nom (SSID) du réseau à surveiller :
+Run the detector by passing the Wi-Fi network name (SSID) to monitor:
 
 ```bash
-python detector.py "Ton_Wifi_Name"
+python detector.py "Your_WiFi_Name"
 ```
 
-## Analyse des données
-Les valeurs de signal sont stockées dans `data.csv`. Le script permet également de générer des graphiques via Matplotlib pour analyser la stabilité du signal et l'impact réel des mouvements.
+## Data Analysis
 
-## Limites connues
-- **Sensibilité** : Dépend fortement de l'environnement et du matériel Wi-Fi utilisé.
-- **Faux positifs** : D'autres objets métalliques en mouvement ou des appareils électroniques peuvent perturber le signal.
+Signal values are stored in `data.csv`. The script also generates charts using Matplotlib to analyze signal stability and the actual impact of movements.
+
+## Known Limitations
+
+- **Sensitivity**: Highly dependent on environment and Wi-Fi hardware used.
+- **False Positives**: Other moving metal objects or electronic devices can interfere with the signal.
