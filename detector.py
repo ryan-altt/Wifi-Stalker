@@ -5,6 +5,7 @@ import os
 import subprocess
 import pandas as pd
 import matplotlib.pyplot as plt
+import argparse
 
 RED = "\033[31m"
 GREEN = "\033[32m"
@@ -21,25 +22,29 @@ RESET = "\033[0m"
 #         pass
 
 def exec_wifi():
-    return subprocess.check_output(['nmcli', 'dev', 'wifi']).decode('utf-8')
+    return subprocess.check_output(
+        ['nmcli', '-t', '-f', 'SSID,SIGNAL', 'dev', 'wifi']
+    ).decode('utf-8')
 
 def store_rssi(name):
-
-    wifis_line = exec_wifi()
-    wifis_tab = wifis_line.splitlines()
-
-    for line in wifis_tab:
-        if name in line:
-            return int(line.split()[7])
+    for line in exec_wifi().splitlines():
+        parts = line.split(':')
+        if len(parts) == 2 and parts[0] == name:
+            return int(parts[1])
+    return None
 
 def store_data_in_csv(wifi_name):
 
-    with open("data.csv", "a") as file:
-        while True:
-            rssi = store_rssi(wifi_name)
-            date = datetime.datetime.now().strftime("%H:%M:%S")
-            file.write(f"{date},{rssi}\n")
-            time.sleep(1)
+    try:
+        with open("data.csv", "a") as file:
+            while True:
+                rssi = store_rssi(wifi_name)
+                date = datetime.datetime.now().isoformat()
+                file.write(f"{date},{rssi}\n")
+                file.flush()
+                time.sleep(1)
+    except KeyboardInterrupt:
+        print(f"\n{YELLOW}Arrêt propre, données sauvegardées.{RESET}")
 
 def graph_from_csv():
     dataframe = pd.read_csv("data.csv", names=["DATE", "RSSI"])
@@ -108,9 +113,14 @@ def detect_rssi(wifi_name):
 
 
 def main():
-    if len(sys.argv) != 2:
-        sys.exit(84)
-    detect_rssi(sys.argv[1])
+    parser = argparse.ArgumentParser(description="Détecteur de mouvement RSSI WiFi")
+    parser.add_argument("-w", "--wifi_name", help="Nom du réseau WiFi à surveiller")
+
+    args = parser.parse_args()
+    if args.wifi_name:
+        detect_rssi(args.wifi_name) 
+    if not args.wifi_name:
+        parser.print_help()
 
 if __name__ == '__main__':
     main()
